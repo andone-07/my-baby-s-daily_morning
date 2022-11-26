@@ -99,8 +99,8 @@ def get_tianhang():
         result = tianapi.read()
         data = result.decode('utf-8')
         dict_data = json.loads(data)
-        if response["code"] == 200:
-            chp = response["result"]["content"]
+        if dict_data["code"] == 200:
+            chp = dict_data["result"]["content"]
         else:
             chp = ""
     except KeyError:
