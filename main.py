@@ -7,6 +7,7 @@ import sys
 import os
 import http.client, urllib, json
 
+
 def get_color():
     # 获取随机颜色
     get_colors = lambda n: list(map(lambda i: "#" + "%06x" % random.randint(0, 0xFFFFFF), range(n)))
@@ -205,6 +206,10 @@ def send_message(to_user, access_token, region_name, weather, temp, wind_dir, no
                 "value": wind_dir,
                 "color": get_color()
             },
+            "love_day": {
+                "value": love_days,
+                "color": get_color()
+            },
             "note_en": {
                 "value": note_en,
                 "color": get_color()
@@ -295,14 +300,9 @@ if __name__ == "__main__":
     # 传入地区获取天气信息
     region = config["region"]
     weather, temp, max_temp, min_temp, wind_dir, sunrise, sunset, category, pm2p5, proposal = get_weather(region)
-    note_ch = config["note_ch"]
-    note_en = config["note_en"]
-    if note_ch == "" and note_en == "":
-        # 获取词霸每日金句
-        note_ch, note_en = get_ciba()
     chp = get_tianhang()
     # 公众号推送消息
     for user in users:
-        send_message(user, accessToken, region, weather, temp, wind_dir, note_ch, note_en, max_temp, min_temp, sunrise,
+        send_message(user, accessToken, region, weather, temp, wind_dir, max_temp, min_temp, sunrise,
                      sunset, category, pm2p5, proposal, chp)
     os.system("pause")
