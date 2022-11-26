@@ -5,7 +5,7 @@ from datetime import datetime, date
 from zhdate import ZhDate
 import sys
 import os
-
+import http.client, urllib, json
 
 def get_color():
     # 获取随机颜色
@@ -91,17 +91,16 @@ def get_weather(region):
 
 def get_tianhang():
     try:
-        key = config["tian_api"]
-        url = "https://apis.tianapi.com/saylove/index?key={}".format(key)
-        headers = {
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) '
-                          'AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36',
-            'Content-type': 'application/x-www-form-urlencoded'
-
-        }
-        response = get(url, headers=headers).json()
+        conn = http.client.HTTPSConnection('apis.tianapi.com')  #接口域名
+        params = urllib.parse.urlencode({'key':config["tian_api"]})
+        headers = {'Content-type':'application/x-www-form-urlencoded'}
+        conn.request('POST','/saylove/index',params,headers)
+        tianapi = conn.getresponse()
+        result = tianapi.read()
+        data = result.decode('utf-8')
+        dict_data = json.loads(data)
         if response["code"] == 200:
-            chp = response["newslist"][0]["content"]
+            chp = response["result"]["content"]
         else:
             chp = ""
     except KeyError:
